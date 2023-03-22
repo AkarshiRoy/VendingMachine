@@ -1,0 +1,29 @@
+// Code your testbench here
+
+module vending_machine_tb;
+  reg clk,rst,five,ten,fifteen;
+  wire can_out;
+  wire [3:0] change;
+  wire [1:0] pr_state,next_state;
+
+  vending_machine dut (clk,rst,pr_state,next_state,five,ten,fifteen,change,can_out);
+
+  initial begin
+    clk=0;
+    forever #1 clk=~clk;
+  end
+
+  initial begin
+    rst=1;five=0;ten=0;fifteen=0;
+    #2 rst=0;five=1;
+    #2 ten=1;
+    #2 fifteen=1;
+    #2 $finish;
+  end
+
+  initial begin
+    $dumpfile("dump.vcd");
+      $dumpvars(0,clk,rst,pr_state,next_state,five,ten,fifteen,can_out,change);
+  end
+
+endmodule
