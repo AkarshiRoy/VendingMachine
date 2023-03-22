@@ -1,0 +1,123 @@
+// Code your design here
+module vending_machine (clk,rst,pr_state,next_state,five,ten,fifteen,change,can_out);
+  
+  input clk,rst,five,ten,fifteen;
+  output reg can_out;
+  output reg [3:0] change;
+  output reg [1:0] pr_state,next_state;
+  parameter rupees_0 = 2'b00;
+  parameter rupees_5 = 2'b01;
+  parameter rupees_10 = 2'b10;
+  parameter rupees_15 = 2'b11;
+  
+  always @(posedge clk)
+    begin
+      if (rst)
+        begin
+          pr_state = rupees_0;
+          can_out = 0;
+        end
+      else
+        pr_state<=next_state;
+    end
+  always @(pr_state,five,ten,fifteen)
+    begin
+      case(pr_state)
+        rupees_0:
+          begin
+            if (five==1)
+              begin
+                next_state=rupees_5;
+                change=4'b0000;
+                can_out=0;
+              end
+            else if (ten==1)
+              begin
+                next_state=rupees_10;
+                change=4'b0000;
+                can_out=0;
+              end
+            else if (fifteen==1)
+              begin
+                next_state=rupees_15;
+                change=4'b0000;
+                can_out=0;
+              end
+          end
+        
+        rupees_5:
+          begin
+            if (five==1)
+              begin
+                next_state=rupees_10;
+                change=4'b0000;
+                can_out=0;
+              end
+            else if (ten==1)
+              begin
+                next_state=rupees_15;
+                change=4'b0000;
+                can_out=0;
+              end
+            else if (fifteen==1)
+              begin
+                next_state=rupees_0;
+                change=4'b0000;
+                can_out=1;
+              end
+          end
+        
+        
+        rupees_10:
+          begin
+            if (five==1)
+              begin
+                next_state=rupees_15;
+                change=4'b0000;
+                can_out=0;
+              end
+            else if (ten==1)
+              begin
+                next_state=rupees_0;
+                change=4'b0000;
+                can_out=1;
+              end
+            else if (fifteen==1)
+              begin
+                next_state=rupees_0;
+                change=4'b0101;
+                can_out=1;
+              end
+          end
+        
+        rupees_15:
+          begin
+            if (five==1)
+              begin
+                next_state=rupees_0;
+                change=4'b0000;
+                can_out=1;
+              end
+            else if (ten==1)
+              begin
+                next_state=rupees_0;
+                change=4'b0101;
+                can_out=1;
+              end
+            else if (fifteen==1)
+              begin
+                next_state=rupees_0;
+                change=4'b1010;
+                can_out=1;
+              end
+          end
+        
+        default:
+          begin
+            next_state=rupees_0;
+            can_out=0;
+            change=0;
+          end
+      endcase
+    end
+endmodule
